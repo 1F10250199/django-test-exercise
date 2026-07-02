@@ -20,6 +20,7 @@ def index(request):
     }
     return render(request, 'todo/index.html', context)
 
+
 def detail(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
@@ -38,3 +39,25 @@ def delete(request, task_id):
         raise Http404("Task does not exist")
     task.delete()
     return redirect(index)
+
+
+def edit(request, task_id):
+    try:
+        task = Task.objects.get(pk=task_id)
+    except Task.DoesNotExist:
+        raise Http404('Task does not found')
+
+    if request.method == 'POST':
+        task.title = request.POST.get('title', task.title)
+        due_at_value = request.POST.get('due_at', '')
+        if due_at_value:
+            task.due_at = make_aware(parse_datetime(due_at_value))
+        else:
+            task.due_at = None
+        task.save()
+        return redirect('detail', task_id=task.id)
+
+    context = {
+        'task': task,
+    }
+    return render(request, 'todo/edit.html', context)
