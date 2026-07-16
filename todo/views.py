@@ -61,3 +61,23 @@ def edit(request, task_id):
         'task': task,
     }
     return render(request, 'todo/edit.html', context)
+
+
+def toggle_saved(request, task_id):
+    try:
+        task = Task.objects.get(pk=task_id)
+    except Task.DoesNotExist:
+        raise Http404('Task does not found')
+    task.saved = not task.saved
+    task.save()
+    # Redirect back to detail page
+    return redirect('detail', task_id=task.id)
+
+
+def saved_list(request):
+    # Show only saved (favorited) tasks
+    tasks = Task.objects.filter(saved=True).order_by('-posted_at')
+    context = {
+        'tasks': tasks,
+    }
+    return render(request, 'todo/saved.html', context)

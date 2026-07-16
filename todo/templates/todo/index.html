@@ -31,11 +31,14 @@
     <div>
       <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
       <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
+      | <a href="{% url 'saved' %}">保存済み</a>
     </div>
 
     {% for task in tasks %}
     <div class="text">
-      <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></a></h2>
+      <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></a>
+        {% if task.saved %}★{% else %}☆{% endif %}
+      </h2>
       <ul>
         <li>Posted at: {{ task.posted_at }}</li>
         {% if task.due_at %} 

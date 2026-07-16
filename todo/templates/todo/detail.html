@@ -26,7 +26,12 @@
     <div>
       <a href="{% url 'index' %}">Top</a>|
       <a href="{% url 'delete' task.id %}">Delete</a>|
-      <a href="{% url 'edit' task.id %}">Edit</a>
+      <a href="{% url 'edit' task.id %}">Edit</a>|
+      {% if task.saved %}
+      <a href="{% url 'toggle_saved' task.id %}">保存を解除</a>
+      {% else %}
+      <a href="{% url 'toggle_saved' task.id %}">お気に入りに保存</a>
+      {% endif %}
     </div>
   </body>
 
