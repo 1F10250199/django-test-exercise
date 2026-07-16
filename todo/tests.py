@@ -168,3 +168,18 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/delete')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_saved_list_get(self):
+        task1 = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task1.saved = True
+        task1.save()
+        task2 = Task(title='task2', due_at=timezone.make_aware(datetime(2024, 8, 1)))
+        task2.saved = False
+        task2.save()
+        client = Client()
+        response = client.get('/saved/')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'todo/saved.html')
+        self.assertEqual(len(response.context['tasks']), 1)
+        self.assertEqual(response.context['tasks'][0], task1)
