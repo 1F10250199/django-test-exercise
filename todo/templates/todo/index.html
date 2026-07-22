@@ -28,6 +28,14 @@
     </form>
     <br>
 
+    <form action="{% url 'index' %}" method="get" style="margin-bottom: 15px;">
+      <input type="text" name="keyword" value="{{ keyword|default:'' }}" placeholder="Search by title...">
+      <button type="submit">Search</button>
+      {% if keyword %}
+        <a href="{% url 'index' %}">Clear</a>
+      {% endif %}
+    </form>
+
     <div>
       <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
       <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
