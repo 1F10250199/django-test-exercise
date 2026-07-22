@@ -3,6 +3,7 @@ from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
 from todo.models import Task
+from django.utils import timezone
 
 
 def index(request):
@@ -10,7 +11,7 @@ def index(request):
         task = Task(title=request.POST['title'],
                     due_at=make_aware(parse_datetime(request.POST['due_at'])))
         task.save()
-    
+
     tasks = Task.objects.all()
 
     keyword = request.GET.get('keyword')
@@ -22,9 +23,13 @@ def index(request):
     else:
         tasks = tasks.order_by('-posted_at')
 
+    now = timezone.now()
+    for task in tasks:
+        task.is_overdue_flag = task.is_overdue(now)
+
     context = {
         'tasks': tasks,
-        'keyword': keyword,  
+        'keyword': keyword,
     }
     return render(request, 'todo/index.html', context)
 
