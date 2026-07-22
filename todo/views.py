@@ -3,6 +3,7 @@ from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
 from todo.models import Task
+from django.utils import timezone
 
 
 def index(request):
@@ -16,7 +17,8 @@ def index(request):
         tasks = Task.objects.order_by('-posted_at')
 
     context = {
-        'tasks': tasks
+        'tasks': tasks,
+        'now': timezone.now(),
     }
     return render(request, 'todo/index.html', context)
 
