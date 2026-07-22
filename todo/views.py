@@ -11,14 +11,25 @@ def index(request):
         task = Task(title=request.POST['title'],
                     due_at=make_aware(parse_datetime(request.POST['due_at'])))
         task.save()
+
+    tasks = Task.objects.all()
+
+    keyword = request.GET.get('keyword')
+    if keyword:
+        tasks = tasks.filter(title__icontains=keyword)
+
     if request.GET.get('order') == 'due':
-        tasks = Task.objects.order_by('due_at')
+        tasks = tasks.order_by('due_at')
     else:
-        tasks = Task.objects.order_by('-posted_at')
+        tasks = tasks.order_by('-posted_at')
+
+    now = timezone.now()
+    for task in tasks:
+        task.is_overdue_flag = task.is_overdue(now)
 
     context = {
         'tasks': tasks,
-        'now': timezone.now(),
+        'keyword': keyword,
     }
     return render(request, 'todo/index.html', context)
 
