@@ -44,7 +44,7 @@
         {% if task.due_at %} 
         <li>
           Due at: {{ task.due_at }}
-          {% if not task.completed and task.is_overdue:now %}
+          {% if not task.completed and task.is_overdue now %}
             <span style="color: red; font-weight: bold;">⚠️ OVERDUE!</span>
           {% endif %}
         </li>
